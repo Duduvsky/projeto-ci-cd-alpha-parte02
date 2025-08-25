@@ -1,0 +1,36 @@
+name: Staging 🚀 on gh-pages push
+
+on:
+  push:
+    branches: [ "gh-pages" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-staging:
+    name: Deploy para /staging (gh-pages)
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 1. Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 2. CI Rápido (staging)
+        run: echo "✅ [TEST-STAGING] Rodando um teste rápido para staging..."
+
+      - name: 3. Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 4. Fazer upload do artefato para o Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 5. Fazer deploy no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
