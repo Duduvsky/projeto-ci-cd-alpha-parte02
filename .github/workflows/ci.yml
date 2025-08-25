@@ -1,0 +1,21 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build & Testes
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 2. Simula o Build
+        run: echo "✅ Rodando build..."
+
+      - name: 3. Simula os Testes
+        run: echo "✅ Rodando testes da aplicação..."

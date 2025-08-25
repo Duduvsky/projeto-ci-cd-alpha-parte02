@@ -1,0 +1,37 @@
+name: Production 🥇 Promote Staging on PR Merge
+
+# Trigger: Roda apenas quando um código novo chega na main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  promote-to-production:
+    name: Promover Staging para Produção
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Faz o checkout do branch gh-pages, que é o nosso branch de deploy
+      - name: 1. Checkout do branch gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      # 2. Copia o arquivo de staging para a raiz (produção)
+      - name: 2. Copiar staging/index.html para index.html
+        run: |
+          echo "Promovendo staging para produção..."
+          cp staging/index.html index.html
+      
+      # 3. Faz o commit da promoção e envia para o gh-pages
+      - name: 3. Commit e Push da promoção
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          # Verifica se há mudanças antes de commitar para evitar erro
+          if ! git diff --staged --quiet; then
+            git commit -m "feat: ✨ Promove staging para produção"
+            git push
+          else
+            echo "Nenhuma mudança para promover."
+          fi
